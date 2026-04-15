@@ -12,7 +12,7 @@ public class InsertarParticipacion {
             numeroMaximo = Comprobador.numeroCiclistas(conexion);
         }while (numeroMaximo == 0);
 
-        Set<Integer> noRepatir =  new HashSet<>();
+        Set<Integer> noRepetir =  new HashSet<>();
         int posicion;
 
         try (Statement st = conexion.createStatement()){
@@ -23,19 +23,41 @@ public class InsertarParticipacion {
                 Random random = new Random();
                 do {
                     posicion = random.nextInt(numeroMaximo)+1;
-                    System.out.println(posicion);
+                    //System.out.println(posicion);
 
-                }while (noRepatir.contains(posicion));
-                noRepatir.add(posicion);
+                }while (noRepetir.contains(posicion));
+                noRepetir.add(posicion);
                 if (posicion <= 5){
-                    try {
-                        String insert = "INSERT INTO PARTICIPACION (ID_CICLISTA, " +
-                                "NUMERO_ETAPA, POSICION, PUNTOS) VALUES (?, ?, ?, ?)";
-                        PreparedStatement ps = conexion.prepareStatement(insert);
+
+                    int puntos;
+                    switch (posicion) {
+                        case 1:
+                            puntos = 100;
+                            break;
+                        case 2:
+                            puntos = 90;
+                            break;
+                        case 3:
+                            puntos = 80;
+                            break;
+                        case 4:
+                            puntos = 70;
+                            break;
+                        case 5:
+                            puntos = 60;
+                            break;
+                        default:
+                            puntos = 0;
+                        break;
+                    }
+
+                    String insert = "INSERT INTO PARTICIPACION (ID_CICLISTA, " +
+                            "NUMERO_ETAPA, POSICION, PUNTOS) VALUES (?, ?, ?, ?)";
+                    try (PreparedStatement ps = conexion.prepareStatement(insert)){
                         ps.setInt(1, idCiclista);
                         ps.setInt(2, etapa);
                         ps.setInt(3, posicion);
-                        ps.setInt(4, 0);
+                        ps.setInt(4, puntos);
                         ps.executeUpdate();
 
                     }catch (SQLException e){
@@ -43,23 +65,23 @@ public class InsertarParticipacion {
                     }
                 }
             }
+            rs.close();
             System.out.println("Participaciones añadidas");
-            try {
-                String updatePuntos = "UPDATE PARTICIPACION\n" +
-                        "SET puntos = CASE posicion\n" +
-                        "    WHEN 1 THEN 100\n" +
-                        "    WHEN 2 THEN 90\n" +
-                        "    WHEN 3 THEN 80\n" +
-                        "    WHEN 4 THEN 70\n" +
-                        "    WHEN 5 THEN 60\n" +
-                        "    ELSE 0\n" +
-                        "END";
-                ResultSet rs2 =st.executeQuery(updatePuntos);
-                rs2.next();
-                System.out.println("Puntos actualizados");
-            } catch (SQLException e){
-                System.out.println("Error al actualizar puntos");
-            }
+//            try (Statement st2 = conexion.createStatement()){
+//                String updatePuntos = "UPDATE PARTICIPACION " +
+//                        "SET puntos = CASE posicion " +
+//                        "    WHEN 1 THEN 100 " +
+//                        "    WHEN 2 THEN 90 " +
+//                        "    WHEN 3 THEN 80 " +
+//                        "    WHEN 4 THEN 70 " +
+//                        "    WHEN 5 THEN 60 " +
+//                        "    ELSE 0 " +
+//                        "END";
+//                st2.executeUpdate(updatePuntos);
+//                System.out.println("Puntos actualizados");
+//            } catch (SQLException e){
+//                System.out.println("Error al actualizar puntos" + e.getMessage());
+//            }
         }catch (SQLException e){
             System.out.println("Error al obtener el id del ciclista: ");
         }

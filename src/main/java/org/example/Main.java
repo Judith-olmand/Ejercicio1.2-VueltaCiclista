@@ -19,7 +19,7 @@ public class Main {
                 System.out.println("Todo correcto. Haciendo commit.");
                 conn.commit();
             } catch (Exception e){
-                System.out.println("“Etapa cancelada por error. No se guardaron los datos.");
+                System.out.println("Etapa cancelada por error. No se guardaron los datos.");
                 conn.rollback();
             }
         } catch (SQLException e) {

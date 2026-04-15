@@ -16,10 +16,10 @@ public class MostrarResumen {
             rs.next();
             LocalDate fecha = rs.getDate(5).toLocalDate();
             System.out.println("ETAPA AÑADIDA: ");
-            System.out.printf("%-18s %-25s %-25s %-12s %-12s%n",
-                    "Número de etapa","Origen","Destino","Km", "Fecha");
+            System.out.printf("%-10s %-20s %-20s %-5s %-10s%n",
+                    "Nº etapa","Origen","Destino","Km", "Fecha");
             System.out.println("-".repeat(95));
-            System.out.printf("%-18s %-25s %-25s %-18s %-10s%n",
+            System.out.printf("%-10s %-20s %-20s %-5s %-10s%n",
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
