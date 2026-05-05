@@ -5,27 +5,48 @@ import oracle.sql.TRANSDUMP;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class MostrarResumen {
     public static void mostrarResumen(Connection conexion, int etapa) {
         try {
+            /**
+             * Consulta para mostrar todos lo campos de la tabla etapa
+             * con el mismo número que el pasado por parámetro
+             */
             String consultaEtapaInsert = "SELECT * FROM ETAPA WHERE NUMERO = ? ";
             PreparedStatement ps = conexion.prepareStatement(consultaEtapaInsert);
             ps.setInt(1, etapa);
             ResultSet rs = ps.executeQuery();
             rs.next();
+            /**
+             * Creo la variable para almacenar una fecha
+             * y la doy el valor de la fecha de la base de datos
+             * .toLocalDate convierte Date a LocalDate
+             */
             LocalDate fecha = rs.getDate(5).toLocalDate();
             System.out.println("ETAPA AÑADIDA: ");
+            /**
+             * Formato preformateado
+             */
             System.out.printf("%-10s %-20s %-20s %-5s %-10s%n",
                     "Nº etapa","Origen","Destino","Km", "Fecha");
+            //El guión "-" se repite en pantalla 95 posiciones
             System.out.println("-".repeat(95));
             System.out.printf("%-10s %-20s %-20s %-5s %-10s%n",
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
                     rs.getInt(4),
-                    fecha);
-            String consultaPuntos = "SELECT * FROM PARTICIPACION WHERE POSICION BETWEEN 1 AND 5 AND NUMERO_ETAPA = ?" ;
+                    //Muestro la fecha como día/mes/año
+                    fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            /**
+             * Consulta para mostrar todos los campos de la tabla participación
+             * de la tabla anterior y las posiciones del 1 al 5
+             * Devuelve varias líneas
+             */
+            String consultaPuntos = "SELECT * FROM PARTICIPACION WHERE POSICION BETWEEN 1 AND 5 AND NUMERO_ETAPA = ? " +
+                    "ORDER BY POSICION ASC" ;
             PreparedStatement ps2 = conexion.prepareStatement(consultaPuntos);
             ps2.setInt(1, etapa);
             ResultSet rsPuntos = ps2.executeQuery();
@@ -34,6 +55,7 @@ public class MostrarResumen {
             System.out.printf("%-18s %-18s %-11s %-10s%n",
                     "ID del Ciclista", "Número de etapa", "Posición" , "Puntos");
             System.out.println("-".repeat(75));
+            //Uso de while para recoger los datos linea a linea
             while (rsPuntos.next()) {
 
                 int idCiclista = rsPuntos.getInt(1);

@@ -13,11 +13,23 @@ public class Main {
                 DBConfig.getUrl(),
                 DBConfig.getUser(),
                 DBConfig.getPassword())) {
+            /**
+             * Pone a false el autoCommit
+             */
             conn.setAutoCommit(false);
+            /**
+             * Llama a insertar etapa y pasa por parámetro
+             * el Scanner y la conexión
+             * si todo sale bien realiza un commit
+             */
             try {
                 InsertarEtapa.NuevoEtapa(sc,conn);
                 System.out.println("Todo correcto. Haciendo commit.");
                 conn.commit();
+            /**
+             * Si ocurre algún error en la inserción lanza esta excepción
+             * y realiza un rollback
+             */
             } catch (Exception e){
                 System.out.println("Etapa cancelada por error. No se guardaron los datos.");
                 conn.rollback();

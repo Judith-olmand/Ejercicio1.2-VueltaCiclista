@@ -3,6 +3,13 @@ package org.example;
 import java.sql.*;
 
 public class Comprobador {
+    /**
+     * Metodo que devuelve un boolean que comprueba si el número que le paso por parámetro
+     * existe o no. Realiza la comprobación mediante PreparedStatement
+     * @param conexion
+     * @param numero
+     * @return
+     */
     public static boolean numeroEtapa(Connection conexion, int numero){
         String comprobarNum = "SELECT NUMERO FROM ETAPA WHERE NUMERO = ?";
         try (PreparedStatement ps = conexion.prepareStatement(comprobarNum)) {
@@ -40,7 +47,11 @@ public class Comprobador {
 //        }
 //    }
 
-
+    /**
+     * Metodo que devuelve un entero, que consulta el número de ciclistas que hay
+     * @param conexion
+     * @return
+     */
     public static int numeroCiclistas(Connection conexion){
         try {
             Statement st = conexion.createStatement();
